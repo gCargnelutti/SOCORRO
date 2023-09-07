@@ -41,11 +41,11 @@ void comunicationBT(){
 
       // prova real de que o numero está chegando inteiro
 
-      Serial.print(kP, 6);
-      Serial.print(" | ");
-      Serial.print(kI, 6);
-      Serial.print(" | ");
-      Serial.println(kD, 6);
+      SerialBT.print(kP, 6);
+      SerialBT.print(" | ");
+      SerialBT.print(kI, 6);
+      SerialBT.print(" | ");
+      SerialBT.println(kD, 6);
       SerialBT.print(kP);
 
     }
@@ -81,6 +81,11 @@ void setup() {
   qtr.setSensorPins((const uint8_t[]){S1,S2,S3,S4,S5,S6,S7,S8}, SensorCount);
   qtr.setEmitterPin(2);
 
+  // CONFIGURACAO PID
+  int P = 0;
+  int I = 0;
+  int D = 0;
+
 
 
 
@@ -101,42 +106,9 @@ void setup() {
   // --------FIM DA CALIBRACAO--------
 
 
-  // print the calibration minimum values measured when emitters were on
-  Serial.begin(9600);
-  for (uint8_t i = 0; i < SensorCount; i++)
-  {
-    Serial.print(qtr.calibrationOn.minimum[i]);
-    Serial.print(' ');
-  }
-  Serial.println();
-
-  // print the calibration maximum values measured when emitters were on
-  for (uint8_t i = 0; i < SensorCount; i++)
-  {
-    Serial.print(qtr.calibrationOn.maximum[i]);
-    Serial.print(' ');
-  }
-  Serial.println();
-  Serial.println();
-  delay(1000);
-
-  // read raw sensor values
-  qtr.read(sensorValues);
-
-  // print the sensor values as numbers from 0 to 1023, where 0 means maximum
-  // reflectance and 1023 means minimum reflectance
-  for (uint8_t i = 0; i < SensorCount; i++)
-  {
-    Serial.print(sensorValues[i]);
-    Serial.print('\t');
-  }
-  Serial.println();
-
+  SerialBT.begin("rodriguess")
   delay(5000);
  
-  int P = 0;
-  int I = 0;
-  int D = 0;
 
 }
 
@@ -171,7 +143,7 @@ for (uint8_t i = 0; i < SensorCount; i++)
   lasterror = error;
   float pidmano = KP*P;
 
-  int16_t vel = 200;
+  int16_t vel = 300;
 
   int16_t motorA = vel - pidmano;
   int16_t motorB = vel + pidmano;
@@ -181,8 +153,8 @@ for (uint8_t i = 0; i < SensorCount; i++)
   //Serial.println (motorA);
   //Serial.println (motorB);
 
-  ledcWrite(A_channel, motorA);
-  ledcWrite(B_channel, motorB);
+  ledcWrite(A_channel, 0); // MOTOR A ------
+  ledcWrite(B_channel, 0); // MOTOR B ------
   digitalWrite(Ain1 , LOW);
   digitalWrite(Bin1 , LOW);
   digitalWrite(Ain2 , HIGH);
@@ -190,4 +162,3 @@ for (uint8_t i = 0; i < SensorCount; i++)
 
   delay(10);
 }
-
