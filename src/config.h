@@ -19,6 +19,8 @@
 #define S7 35
 #define S8 34
 
+#define Lt 17 //TX2
+
 // PWM?
 #define DEFAULT_LEDC_FREQ 800
 #define _resolution 10
