@@ -1,0 +1,63 @@
+PONTE H -- ESP
+pwm A -- 4
+ain2 -- 23
+ain1 -- 22
+stby -- vcc
+bin1 -- 18
+bin2 -- 21
+pwmb -- 19
+
+SENSOR -- ESP
+ir -- 13
+sensor 1 -- 14
+sensor 2 -- 27
+sensor 3 -- 26
+sensor 4 -- 25
+sensor 5 -- 33
+sensor 6 -- 32
+sensor 7 -- 35
+sensor 8 -- 34
+vcc -- vcc
+
+
+
+
+
+#include <Arduino.h>
+#include <QTRSensors.h>
+
+const uint8_t SensorCount = 8;
+uint16_t sensorValues [SensorCount];
+int internal_led = 2;
+
+void setup() {
+
+qtr.setTypeAnalog();
+qtr.setEmmiterPin(19); // Entrada Infra red
+qtr.setSensorPins((const uint8_t[]){ 14, 27, 26, 25, 33, 32, 35, 34}, SensorCount);//entradas dos pinos do sensor 
+
+Serial.begin(9600);
+delay(1000);
+// calibração dos sensores 
+
+//led high
+digitalWrite(internal_led, HIGH);
+
+for (uint16_t i = 0; i<500; i++){
+  qtr.calibrate();
+}
+//led low
+digitalWrite(internal_led, LOW);
+
+for (int j=0; j<Sensorcounter, j++){
+  Serial.print ('Calibração maxima de');
+  Serial.print(j);
+  Serial.println(qtr.calibrationOn.maximum[j]);
+  Serial.print ('Calibração minima de');
+  Serial.print(j);
+  Serial.println(qtr.calibrationOn.minimum[j]);
+}
+
+void loop() {
+  uint16_t position = qtr.readLineBlack(sensorValues);
+}

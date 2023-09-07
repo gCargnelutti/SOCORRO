@@ -1,0 +1,84 @@
+  // -----ROTINA DE CALIBRACAO-----
+  delay(2000);
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH);
+
+
+  digitalWrite(Ain1 , LOW);
+  digitalWrite(Bin1 , LOW);
+  digitalWrite(Ain2 , LOW);
+  digitalWrite(Bin2 , LOW);
+  ledcWrite(A_channel, 100);
+  ledcWrite(B_channel, 100);
+  delay(50);
+
+  // CURVA PARA A DIREITA
+  digitalWrite(Ain1 , HIGH);  // ATENCAO
+  digitalWrite(Bin1 , LOW);   // ATENCAO
+  digitalWrite(Ain2 , LOW);   // ATENCAO
+  digitalWrite(Bin2 , HIGH);  // ATENCAO
+  for (uint16_t i = 0; i < 5; i++)
+  {
+    qtr.calibrate();
+    delay(1);
+  }
+  delay(20);
+  digitalWrite(Ain1 , LOW);
+  digitalWrite(Bin1 , LOW);
+  digitalWrite(Ain2 , LOW);
+  digitalWrite(Bin2 , LOW);
+
+// RETORNA PARA O CENTRO
+  digitalWrite(Ain1 , LOW);   // ATENCAO
+  digitalWrite(Bin1 , HIGH);  // ATENCAO
+  digitalWrite(Ain2 , HIGH);  // ATENCAO
+  digitalWrite(Bin2 , LOW);   // ATENCAO
+  for (uint16_t i = 0; i < 5; i++)
+  {
+    qtr.calibrate();
+    delay(1);
+  }
+  delay(20);
+  digitalWrite(Ain1 , LOW);
+  digitalWrite(Bin1 , LOW);
+  digitalWrite(Ain2 , LOW);
+  digitalWrite(Bin2 , LOW);
+
+// CURVA PARA A ESQUERDA
+  digitalWrite(Ain1 , LOW);   // ATENCAO
+  digitalWrite(Bin1 , HIGH);  // ATENCAO
+  digitalWrite(Ain2 , HIGH);  // ATENCAO
+  digitalWrite(Bin2 , LOW);   // ATENCAO
+  for (uint16_t i = 0; i < 5; i++)
+  {
+    qtr.calibrate();
+    delay(1);
+  }
+  delay(20);
+  digitalWrite(Ain1 , LOW);
+  digitalWrite(Bin1 , LOW);
+  digitalWrite(Ain2 , LOW);
+  digitalWrite(Bin2 , LOW);
+
+// RETORNA PARA O CENTRO      
+  digitalWrite(Ain1 , HIGH);  // ATENCAO
+  digitalWrite(Bin1 , LOW);   // ATENCAO
+  digitalWrite(Ain2 , LOW);   // ATENCAO
+  digitalWrite(Bin2 , HIGH);  // ATENCAO
+  
+  for (uint16_t i = 0; i < 5; i++)
+  {
+    qtr.calibrate();
+    delay(1);
+  }
+  delay(20);
+  digitalWrite(Ain1 , LOW);
+  digitalWrite(Bin1 , LOW);
+  digitalWrite(Ain2 , LOW);
+  digitalWrite(Bin2 , LOW);
+
+
+  digitalWrite(LED_BUILTIN, LOW);
+  ledcWrite(A_channel, 0);
+  ledcWrite(B_channel, 0);
+  // -----FIM DA CALIBRACAO-----
