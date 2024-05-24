@@ -14,6 +14,8 @@ uint16_t sensorValues [SensorCount];
 BluetoothSerial SerialBT;
 
 
+
+
 void comunicationBT(){
   
    if(SerialBT.available()){
@@ -63,6 +65,7 @@ void comunicationBT(){
 
        ledcWrite(A_channel, 0);
        ledcWrite(B_channel, 0);
+
       iniciar = LOW;
 
     } 
@@ -111,30 +114,48 @@ void setup() {
   ledcAttachPin(PWMB , B_channel);
   ledcSetup(B_channel , DEFAULT_LEDC_FREQ , _resolution);
 
-    ledcWrite(A_channel, 0);
-    ledcWrite(B_channel, 0);
+  ledcWrite(A_channel, 0);
+  ledcWrite(B_channel, 0);
   
   // QTR
 
   qtr.setTypeAnalog();
+  pinMode(S1, INPUT);
+  pinMode(S2, INPUT);
+  pinMode(S3, INPUT);
+  pinMode(S4, INPUT);
+  pinMode(S5, INPUT);
+  pinMode(S6, INPUT);
+  pinMode(S7, INPUT);
+  pinMode(S8, INPUT);
   qtr.setSensorPins((const uint8_t[]){S1,S2,S3,S4,S5,S6,S7,S8}, SensorCount);
-  //qtr.setEmitterPin(2); 
+  // qtr.setEmitterPin(2); 
+
 
 }
 
 void loop() {
 
- comunicationBT();
+  comunicationBT ();
+
+  if (iniciar == LOW) {
+
+    ledcWrite(A_channel, 0);
+    ledcWrite(B_channel, 0);
+
+  }
+
+
 
  while (calibrar == HIGH){
 
- SerialBT.begin ("inicio da calibração");
+ SerialBT.println ("inicio da calibração");
 
   delay(100);
 
 
 
- for (uint16_t j = 0; j < 150; j++)
+ for (uint16_t j = 0; j < 300; j++)
   {
         qtr.calibrate();
         delay(1);
@@ -159,8 +180,6 @@ void loop() {
   Serial.println();
   
 
-  delay(1000);
-
    qtr.read(sensorValues);
 
    for (uint8_t i = 0; i < SensorCount; i++)
@@ -172,21 +191,21 @@ void loop() {
 
   calibrar = LOW;
 
-  SerialBT.begin ("fim da calibração");
+  SerialBT.println ("fim da calibração");
 
  }
 
 
  while (iniciar == HIGH) {
 
-    comunicationBT();
+    comunicationBT ();
+
  
     qtr.read(sensorValues);
 
-    uint16_t sensores [8];
-    int16_t position = qtr.readLineWhite(sensores);
+    int16_t position = qtr.readLineWhite(sensorValues);
     int16_t setpoint = 3500;
-    static int16_t lasterror = 0;
+    int16_t lasterror = 0;
     int16_t error = position - setpoint;
 
 
@@ -201,22 +220,33 @@ void loop() {
     int16_t motorA = VEL - PID;
     int16_t motorB = VEL + PID;
 
+    if (motorA <= 0){
+
+      motorA = 0;
+
+    }
+
+    if (motorB <= 0){
+
+      motorB = 0;
+
+    }
+
     ledcWrite(A_channel, motorA);
     ledcWrite(B_channel, motorB);
 
-   // SENSOR LATERAL DIREITO PARA PARADA 
+    //  SENSOR LATERAL DIREITO PARA PARADA 
 
-    bool readR = digitalRead (Sensor_R);
+    readR = digitalRead (Sensor_R);
 
     if ( readR == HIGH && anteriorreadR == LOW ){
 
       contadorR ++;
-      Serial.println (contadorR);
 
     }
     
 
-    if (contadorR >= 12){
+    if (contadorR >= 30){
 
     ledcWrite(A_channel, 0);
     ledcWrite(B_channel, 0);
@@ -230,5 +260,5 @@ void loop() {
     anteriorreadR = readR;
 
   }
- 
+
 }
