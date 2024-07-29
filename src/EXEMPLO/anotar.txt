@@ -1,0 +1,37 @@
+// SENSOR LATERAL ESQUERDO PARA VARIAÇÃO DE PID
+
+    readL = digitalRead (Sensor_L);
+
+    if ( readL == HIGH && anteriorreadL == LOW ){
+
+      contadorL ++;
+      Serial.println (contadorL);
+
+    }
+
+    //  SENSOR LATERAL DIREITO PARA PARADA 
+
+    readR = digitalRead (Sensor_R);
+
+    if ( readR == HIGH && anteriorreadR == LOW ){
+
+      contadorR ++;
+
+    }
+    
+
+    if (contadorR >= 8){
+
+    ledcWrite(A_channel, 0);
+    ledcWrite(B_channel, 0);
+
+     iniciar = LOW;
+
+     contadorR = 0;
+
+    }
+
+    anteriorreadR = readR;
+
+  }
+ 
